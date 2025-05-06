@@ -35,7 +35,7 @@ import {
             Home
           </NavbarLink>
           <NavbarLink href="video-to-video">Video Convertor</NavbarLink>
-          <NavbarLink href="#">Contact</NavbarLink>
+          <NavbarLink href="history">User&apos;s History</NavbarLink>
         </NavbarCollapse>
       </Navbar>
     );
