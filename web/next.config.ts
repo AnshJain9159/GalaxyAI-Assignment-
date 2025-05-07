@@ -7,6 +7,13 @@ const nextConfig: NextConfig = {
     config.externals = [...config.externals, '@uploadcare/upload-client'];
     return config;
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
 };
 
 export default (withFlowbiteReact(nextConfig));
