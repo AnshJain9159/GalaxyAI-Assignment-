@@ -40,7 +40,7 @@ export function Foot() {
           </div>
 
           <div className="text-sm text-muted-foreground">
-            Powered by Fal API (Hunyuan-Video Model) • © {new Date().getFullYear()} VideoTransform
+            Powered by Fal API (Hunyuan-Video Model) • © {new Date().getFullYear()} VideoTransform • Made with ❤️ by Ansh Jain
           </div>
         </div>
       </div>

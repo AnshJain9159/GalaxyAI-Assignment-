@@ -158,7 +158,7 @@ Ready for deployment on [Vercel](https://vercel.com):
 - [Uploadcare](https://uploadcare.com) – Upload widget
 - [ImageKit](https://imagekit.io) – Optimized media delivery
 - [Fal AI](https://fal.ai) – Hunyuan Video Model backend
-
+- [V0](https://v0.dev) – V0 for UI/UX
 ---
 
 ## ❤️ Author
