@@ -58,7 +58,7 @@ export default function TransformPage() {
 
     const pollStatus = async () => {
       try {
-        const res = await fetch(`/api/job-status?jobId=${jobId}`);
+        const res = await fetch(`/api/fal-webhook?jobId=${jobId}`);
         const data = await res.json();
         if (data.status === "completed" && data.output?.video_url) {
           setGeneratedVideoUrl(data.output.video_url);
