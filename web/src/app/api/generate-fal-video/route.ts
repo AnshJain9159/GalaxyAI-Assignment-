@@ -3,6 +3,7 @@ import { fal } from "@fal-ai/client";
 import dbConnect from "@/lib/dbConnect";
 import VideoHistory from "@/models/VideoHistory";
 import { auth } from "@clerk/nextjs/server";
+
 fal.config({ credentials: process.env.NEXT_FAL_KEY! });
 
 export async function POST(req: NextRequest) {
@@ -30,7 +31,32 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Prompt and video_url are required" }, { status: 400 });
     }
 
-    const result = await fal.run("fal-ai/hunyuan-video/video-to-video", {
+    await dbConnect();
+    // Create a pending job in MongoDB
+    const job = await VideoHistory.create({
+      userId,
+      sourceVideoUrl: video_url,
+      generatedVideoUrl: null,
+      parameters: {
+        prompt,
+        num_inference_steps,
+        aspect_ratio,
+        resolution,
+        num_frames,
+        strength,
+        seed,
+        pro_mode,
+        enable_safety_checker,
+      },
+      status: "pending",
+      createdAt: new Date(),
+    });
+
+    // Webhook URL for Fal to call when done
+    const webhookUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/fal-webhook`;
+
+    // Submit job to Fal with webhook
+    await fal.queue.submit("fal-ai/hunyuan-video/video-to-video", {
       input: {
         prompt,
         video_url,
@@ -43,38 +69,13 @@ export async function POST(req: NextRequest) {
         pro_mode,
         enable_safety_checker,
       },
-      logs: false,
-    });
-
-    // Log the full result for debugging
-    // console.log("Fal API result:", result);
-    const generatedVideoUrl = result?.data?.video?.url;
-    if (!generatedVideoUrl) {
-      return NextResponse.json({ error: "No video URL returned from Fal API." }, { status: 500 });
-    }
-
-    // Save to MongoDB
-    await dbConnect();
-    await VideoHistory.create({
+      webhookUrl,
+      jobId: job._id.toString(), // Pass jobId for tracking
       userId,
-      sourceVideoUrl: video_url,
-      generatedVideoUrl,
-      parameters: {
-        prompt,
-        num_inference_steps,
-        aspect_ratio,
-        resolution,
-        num_frames,
-        strength,
-        seed,
-        pro_mode,
-        enable_safety_checker,
-      },
     });
-    // Return the full result or the correct nested properties
-    return NextResponse.json(result);
-    // Or, if you want only the video URL and seed:
-    // return NextResponse.json({ video: result.video?.url, seed: result.seed });
+
+    // Return jobId so frontend can poll for status
+    return NextResponse.json({ jobId: job._id });
 
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

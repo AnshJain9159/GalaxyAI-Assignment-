@@ -1,7 +1,8 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -44,10 +45,35 @@ export default function TransformPage() {
   const [error, setError] = useState<string | null>(null)
   const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [jobId, setJobId] = useState<string | null>(null)
 
   const handleChange = (name: string, value: unknown) => {
     setForm(prev => ({ ...prev, [name]: value }))
   }
+
+  // Poll for job status if jobId is set
+  useEffect(() => {
+    if (!jobId) return;
+    let interval: NodeJS.Timeout;
+
+    const pollStatus = async () => {
+      try {
+        const res = await fetch(`/api/job-status?jobId=${jobId}`);
+        const data = await res.json();
+        if (data.status === "completed" && data.output?.video_url) {
+          setGeneratedVideoUrl(data.output.video_url);
+          setIsGenerating(false);
+          clearInterval(interval);
+        }
+      } catch (err) {
+        // Optionally handle error
+      }
+    };
+
+    interval = setInterval(pollStatus, 5000); // Poll every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [jobId]);
 
   // Uploadcare file upload handler
   const handleChangeEvent = async (e: any) => {
@@ -105,21 +131,16 @@ export default function TransformPage() {
         }),
       })
       const data = await res.json()
-      if (res.ok) {
-        // Fal API result is nested: data.data.video.url
-        const videoUrl = data?.data?.video?.url
-        if (videoUrl) {
-          setGeneratedVideoUrl(videoUrl)
-        } else {
-          setError("No video URL returned from Fal API.")
-        }
+      if (res.ok && data.jobId) {
+        setJobId(data.jobId);
+        setGeneratedVideoUrl(null); // Clear previous video
       } else {
-        setError(data.error || "Fal video generation failed")
+        setError(data.error || "Fal video generation failed");
+        setIsGenerating(false);
       }
     } catch (err: any) {
-      setError(err.message || "Fal video generation failed")
-    } finally {
-      setIsGenerating(false)
+      setError(err.message || "Fal video generation failed");
+      setIsGenerating(false);
     }
   }
 
