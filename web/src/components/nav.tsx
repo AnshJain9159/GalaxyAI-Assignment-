@@ -17,7 +17,7 @@ import {
   export function Nav() {
     return (
       <Navbar fluid rounded>
-        <NavbarBrand href="https://flowbite-react.com">
+        <NavbarBrand href="/">
           <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Galaxy</span>
         </NavbarBrand>
         <div className="flex md:order-2">

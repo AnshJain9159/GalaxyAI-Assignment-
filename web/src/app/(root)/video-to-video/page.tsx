@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import React, { useState } from 'react'
@@ -16,11 +17,10 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Slider } from "@/components/ui/slider"
 import { FileUploaderRegular } from "@uploadcare/react-uploader/next";
 import "@uploadcare/react-uploader/core.css";
-import dynamic from "next/dynamic";
-
-const Video = dynamic(() => import('next-video'), { ssr: false });
+import { ImageKitProvider, Video as IKVideo } from "@imagekit/next";
 
 const pubKey = process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY;
+const imagekitUrl = process.env.NEXT_IMAGEKIT_URL;
 
 function Page() {
   const [form, setForm] = useState({
@@ -116,132 +116,140 @@ function Page() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#F5F6FA]">
-      <Card className="p-8 w-full max-w-md shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-center">AI Video-to-Video Generator</h2>
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="space-y-2">
-            <Label htmlFor="prompt">Prompt</Label>
-            <Input
-              id="prompt"
-              name="prompt"
-              type="text"
-              placeholder="Enter your prompt"
-              value={form.prompt}
-              onChange={(e) => handleChange("prompt", e.target.value)}
-              required
-            />
-          </div>
+    <ImageKitProvider urlEndpoint={imagekitUrl!}>
+      <div className="flex justify-center items-center min-h-screen bg-[#F5F6FA]">
+        <Card className="p-8 w-full max-w-md shadow-lg">
+          <h2 className="text-2xl font-bold mb-6 text-center">AI Video-to-Video Generator</h2>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="prompt">Prompt</Label>
+              <Input
+                id="prompt"
+                name="prompt"
+                type="text"
+                placeholder="Enter your prompt"
+                value={form.prompt}
+                onChange={(e) => handleChange("prompt", e.target.value)}
+                required
+              />
+            </div>
 
-          <div className="space-y-2">
-            <FileUploaderRegular
-              onFileUploadFailed={handleUploadFailed}
-              pubkey={pubKey}
-              onChange={handleChangeEvent}
-            />
-            {uploading && <div className="text-sm text-blue-500">Uploading to Cloudinary...</div>}
-            {cloudinaryUrl && (
-              <div className="text-sm text-green-600 break-all">
-                Uploaded to Cloudinary!
-                {/* <a href={cloudinaryUrl} target="_blank" rel="noopener noreferrer">{cloudinaryUrl}</a> */}
-              </div>
-            )}
-            {error && <div className="text-sm text-red-600">{error}</div>}
-          </div>
+            <div className="space-y-2">
+              <FileUploaderRegular
+                onFileUploadFailed={handleUploadFailed}
+                pubkey={pubKey}
+                onChange={handleChangeEvent}
+              />
+              {uploading && <div className="text-sm text-blue-500">Uploading to Cloudinary...</div>}
+              {cloudinaryUrl && (
+                <div className="text-sm text-green-600 break-all">
+                  Uploaded to Cloudinary!
+                  {/* <a href={cloudinaryUrl} target="_blank" rel="noopener noreferrer">{cloudinaryUrl}</a> */}
+                </div>
+              )}
+              {error && <div className="text-sm text-red-600">{error}</div>}
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="aspect_ratio">Aspect Ratio</Label>
-            <Select value={form.aspect_ratio} onValueChange={(value) => handleChange("aspect_ratio", value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select aspect ratio" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="16:9">16:9</SelectItem>
-                <SelectItem value="9:16">9:16</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="aspect_ratio">Aspect Ratio</Label>
+              <Select value={form.aspect_ratio} onValueChange={(value) => handleChange("aspect_ratio", value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select aspect ratio" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="16:9">16:9</SelectItem>
+                  <SelectItem value="9:16">9:16</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="resolution">Resolution</Label>
-            <Select value={form.resolution} onValueChange={(value) => handleChange("resolution", value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select resolution" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="480p">480p</SelectItem>
-                <SelectItem value="580p">580p</SelectItem>
-                <SelectItem value="720p">720p</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="resolution">Resolution</Label>
+              <Select value={form.resolution} onValueChange={(value) => handleChange("resolution", value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select resolution" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="480p">480p</SelectItem>
+                  <SelectItem value="580p">580p</SelectItem>
+                  <SelectItem value="720p">720p</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="num_frames">Number of Frames</Label>
-            <Select value={form.num_frames.toString()} onValueChange={(value) => handleChange("num_frames", parseInt(value))}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select number of frames" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="129">129</SelectItem>
-                <SelectItem value="85">85</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="num_frames">Number of Frames</Label>
+              <Select value={form.num_frames.toString()} onValueChange={(value) => handleChange("num_frames", parseInt(value))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select number of frames" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="129">129</SelectItem>
+                  <SelectItem value="85">85</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="space-y-2">
-            <Label>Strength ({form.strength})</Label>
-            <Slider
-              value={[form.strength]}
-              onValueChange={([value]) => handleChange("strength", value)}
-              min={0}
-              max={1}
-              step={0.01}
-            />
-          </div>
+            <div className="space-y-2">
+              <Label>Strength ({form.strength})</Label>
+              <Slider
+                value={[form.strength]}
+                onValueChange={([value]) => handleChange("strength", value)}
+                min={0}
+                max={1}
+                step={0.01}
+              />
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="seed">Seed (Optional)</Label>
-            <Input
-              id="seed"
-              name="seed"
-              type="number"
-              placeholder="Enter seed for reproducibility"
-              value={form.seed}
-              onChange={(e) => handleChange("seed", e.target.value)}
-            />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="seed">Seed (Optional)</Label>
+              <Input
+                id="seed"
+                name="seed"
+                type="number"
+                placeholder="Enter seed for reproducibility"
+                value={form.seed}
+                onChange={(e) => handleChange("seed", e.target.value)}
+              />
+            </div>
 
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="pro_mode"
-              checked={form.pro_mode}
-              onCheckedChange={(checked) => handleChange("pro_mode", checked)}
-            />
-            <Label htmlFor="pro_mode">Pro Mode (55 steps, higher quality)</Label>
-          </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="pro_mode"
+                checked={form.pro_mode}
+                onCheckedChange={(checked) => handleChange("pro_mode", checked)}
+              />
+              <Label htmlFor="pro_mode">Pro Mode (55 steps, higher quality)</Label>
+            </div>
 
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="enable_safety_checker"
-              checked={form.enable_safety_checker}
-              onCheckedChange={(checked) => handleChange("enable_safety_checker", checked)}
-            />
-            <Label htmlFor="enable_safety_checker">Enable Safety Checker</Label>
-          </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="enable_safety_checker"
+                checked={form.enable_safety_checker}
+                onCheckedChange={(checked) => handleChange("enable_safety_checker", checked)}
+              />
+              <Label htmlFor="enable_safety_checker">Enable Safety Checker</Label>
+            </div>
 
-          <Button type="submit" className="w-full">Generate Video</Button>
-        </form>
-        {generatedVideoUrl && (
-          <div className="mt-8">
-            <h3 className="text-lg font-semibold mb-2">Generated Video:</h3>
-            <Video src={generatedVideoUrl} />
-            <div className="text-xs break-all mt-2">{generatedVideoUrl}</div>
-          </div>
-        )}
-        {error && <div className="text-sm text-red-600 mt-4">{error}</div>}
-      </Card>
-    </div>
+            <Button type="submit" className="w-full">Generate Video</Button>
+          </form>
+          {generatedVideoUrl && (
+            <div className="mt-8">
+              <h3 className="text-lg font-semibold mb-2">Generated Video:</h3>
+              <IKVideo
+                urlEndpoint={imagekitUrl!}
+                src={generatedVideoUrl}
+                controls
+                width={500}
+                height={300}
+              />
+              <div className="text-xs break-all mt-2">{generatedVideoUrl}</div>
+            </div>
+          )}
+          {error && <div className="text-sm text-red-600 mt-4">{error}</div>}
+        </Card>
+      </div>
+    </ImageKitProvider>
   )
 }
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import  { Schema, Document, models, model } from "mongoose";
 
 export interface IVideoHistory extends Document {
