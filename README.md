@@ -103,6 +103,14 @@ yarn dev
 
 Visit [http://localhost:3000](http://localhost:3000)
 
+### 5. Run the Ngrok Server
+
+```bash
+npx ngrok http 3000
+```
+
+Copy the HTTPS URL provided by ngrok and set it as your `NEXT_PUBLIC_BASE_URL` in the `.env` file.
+
 ---
 
 ## 🔄 Main Flows
