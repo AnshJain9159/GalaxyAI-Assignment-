@@ -1,9 +1,11 @@
 
 # 🎬 VideoTransform — AI-Powered Video Transformation Tool
 
-A full-stack Next.js 14 application that enables users to transform videos using the **Hunyuan-Video Model (via Fal API)**. Built with modern tools like Clerk for authentication, MongoDB for history tracking, Uploadcare + Cloudinary for uploads, and ImageKit for optimized delivery.
-
+A full-stack Next.js application that enables users to transform videos using the **Hunyuan-Video Model (via Fal API)**. Built with modern tools like Clerk for authentication, ShadCN / V0 for UI/UX, MongoDB for history tracking, Uploadcare + Cloudinary for uploads, ImageKit for optimized delivery and NGORK for local webhook testing.
 ✨ **Transform your video content with AI magic – directly in your browser!**
+
+## 📽️Youtube Demo URL : https://youtu.be/cit_Uyr9ptM
+## 🔗Deployed Link : https://galaxy-ai-assignment.vercel.app
 
 ---
 
