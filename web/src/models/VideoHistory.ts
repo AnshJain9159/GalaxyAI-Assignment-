@@ -10,7 +10,7 @@ export interface IVideoHistory extends Document {
   output?: Record<string, any>;
   createdAt: Date;
   completedAt?: Date;
-  jobId?: string;
+  falRequestId?: string;
 }
 
 const VideoHistorySchema = new Schema<IVideoHistory>(
@@ -23,7 +23,7 @@ const VideoHistorySchema = new Schema<IVideoHistory>(
     output: { type: Schema.Types.Mixed, default: null },
     createdAt: { type: Date, default: Date.now },
     completedAt: { type: Date, default: null },
-    jobId: { type: String, default: null },
+    falRequestId: { type: String, default: null },
   },
   { collection: "video_histories" }
 );

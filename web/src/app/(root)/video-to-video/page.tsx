@@ -60,8 +60,8 @@ export default function TransformPage() {
       try {
         const res = await fetch(`/api/fal-webhook?jobId=${jobId}`);
         const data = await res.json();
-        if (data.status === "completed" && data.output?.video_url) {
-          setGeneratedVideoUrl(data.output.video_url);
+        if (data.status === "completed" && (data.output?.video_url || data.output?.video?.url)) {
+          setGeneratedVideoUrl(data.output.video_url || data.output.video?.url);
           setIsGenerating(false);
           clearInterval(interval);
         }

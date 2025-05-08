@@ -30,8 +30,12 @@ galaxyasg/
 │   │   │   ├── video-to-video/
 │   │   │   ├── history/
 │   │   ├── api/
+│   │   │   ├── fal/
+│   │   │   │   ├── proxy/route.ts
+│   │   │   ├── generate-fal-video/route.ts
 │   │   │   ├── upload-to-cloudinary/route.ts
 │   │   │   ├── generate-fal-video/route.ts
+│   │   │   ├── fal-webhook/route.ts
 │   │   │   ├── history/route.ts
 │   │   ├── components/      # Reusable UI components
 │   │   ├── lib/dbConnect.ts # MongoDB connection utility
@@ -82,6 +86,7 @@ NEXT_PUBLIC_CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 NEXT_FAL_KEY=your_fal_api_key
 NEXT_PUBLIC_IMAGEKIT_URL=https://ik.imagekit.io/your_imagekit_id/
+NEXT_PUBLIC_BASE_URL=https://...ngrok-free.app
 ```
 
 > 🔒 Replace all `your_*` values with your actual keys from the respective services.
@@ -159,11 +164,13 @@ Ready for deployment on [Vercel](https://vercel.com):
 - [ImageKit](https://imagekit.io) – Optimized media delivery
 - [Fal AI](https://fal.ai) – Hunyuan Video Model backend
 - [V0](https://v0.dev) – V0 for UI/UX
+- [NGROK](https://ngrok.com) – NGROK for local webhook testing
+- [Vercel](https://vercel.com) – Deployment platform
 ---
 
 ## ❤️ Author
 
-Built with passion by **Ansh Jain**  
+Built  by **Ansh Jain**  
 📧 anshjain9159@gmail.com  
 🌐 [@Ansh Jain](https://twitter.com/https://x.com/whoanshjain) on Twitter & [@Ansh Jain](https://www.linkedin.com/in/ansh-jain-78986b242/) on LinkedIn
 

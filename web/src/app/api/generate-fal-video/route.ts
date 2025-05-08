@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import { fal } from "@fal-ai/client";
 import dbConnect from "@/lib/dbConnect";
 import VideoHistory from "@/models/VideoHistory";
 import { auth } from "@clerk/nextjs/server";
 
-fal.config({ credentials: process.env.NEXT_FAL_KEY! });
+fal.config({ credentials: process.env.NEXT_FAL_KEY!,proxyUrl: "/api/fal/proxy" });
 
 export async function POST(req: NextRequest) {
   try {
@@ -56,7 +57,7 @@ export async function POST(req: NextRequest) {
     const webhookUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/fal-webhook`;
 
     // Submit job to Fal with webhook
-    await fal.queue.submit("fal-ai/hunyuan-video/video-to-video", {
+    const falRes = await fal.queue.submit("fal-ai/hunyuan-video/video-to-video", {
       input: {
         prompt,
         video_url,
@@ -70,10 +71,13 @@ export async function POST(req: NextRequest) {
         enable_safety_checker,
       },
       webhookUrl,
-      jobId: job._id.toString(), // Pass jobId for tracking
-      userId,
     });
 
+    // Save Fal's request_id in your job for webhook tracking
+    await VideoHistory.findByIdAndUpdate(job._id, {
+      falRequestId: falRes.request_id,
+    });
+    
     // Return jobId so frontend can poll for status
     return NextResponse.json({ jobId: job._id });
 

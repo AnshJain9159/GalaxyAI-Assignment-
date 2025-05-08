@@ -3,12 +3,17 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 const isProtectedRoute = createRouteMatcher([
   '/video-to-video',
   '/history',
-  '/api/(.*)',
+  // '/api/(.*)',
   '/trpc/(.*)',
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
   // Only require auth for protected routes
+  const url = req.nextUrl.pathname;
+  if (url === '/api/fal-webhook') {
+    // Do not require auth for Fal webhook
+    return;
+  }
   if (isProtectedRoute(req)) {
     await auth.protect();
   }
